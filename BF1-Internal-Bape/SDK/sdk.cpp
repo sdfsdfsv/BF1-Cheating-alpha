@@ -14,15 +14,15 @@ Vec2 ToVec2(ImVec2 vec)
 /* Implementation for distance */
 float ClientSoldierEntity::Distance(Vec3 origin)
 {
-	Vec3 target = this->location;
+    Vec3 target = this->location;
 
-	return sqrt(target.x - origin.x * target.x - origin.x + target.y - origin.y * target.y - origin.y + target.z - origin.z * target.z - origin.z);
+    return sqrt(target.x - origin.x * target.x - origin.x + target.y - origin.y * target.y - origin.y + target.z - origin.z * target.z - origin.z);
 }
 
 /* Implementation for length */
 float ClientSoldierEntity::Length(Vec2 origin, Vec2 target)
 {
-	return sqrt(target.x - origin.x * target.x - origin.x + target.y - origin.y * target.y - origin.y );
+    return sqrt(target.x - origin.x * target.x - origin.x + target.y - origin.y * target.y - origin.y);
 }
 
 bool ClientSoldierEntity::GetBonePos(int BoneId, Vec3& vOut)

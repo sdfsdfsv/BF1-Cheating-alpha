@@ -8,7 +8,7 @@
 #include <cstdint>
 
 
-/* Convert Vec3 world position to Vec2 screen position */
+/* 世界3维坐标转2维屏幕坐标 */
 Vec2 W2S(Vec3 origin, Matrix4x4* view_Matrix4x4, uint64_t camera);
 
-#endif // _GAME_MATH_HPP
+#endif 

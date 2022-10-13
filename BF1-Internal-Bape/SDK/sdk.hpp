@@ -17,6 +17,7 @@ Vec2 ToVec2(ImVec2 vec);
 #define OFFSET_DXRENDERER 0x1439E75F8
 #define OFFSET_DISPATCHMESSAGE 0x14461c4f0
 
+
 /* Check if the ptr parameter is valid */
 #define IsValidPtr(x) ( x != NULL && (DWORD_PTR)x >= 0x10000 && (DWORD_PTR)x < 0x00007FFFFFFEFFFF)
 
@@ -277,10 +278,8 @@ public:
 class LinearTransform
 {
 public:
-	union
-	{
-		struct
-		{
+	union{
+		struct{
 			Vec3 left;
 			Vec3 up;
 			Vec3 forward;
@@ -437,7 +436,7 @@ public:
 	bool IsVisible() {
 		return (this->occluded == false);
 	}
-	AxisAlignedBox GetAABB() {
+	inline AxisAlignedBox GetAABB() {
 		AxisAlignedBox aabb = AxisAlignedBox();
 		if (this->poseType == 0) // standing
 		{
@@ -460,7 +459,7 @@ public:
 
 	Vec3 Distance()
 	{
-		
+
 	}
 }; //Size: 0x104C
 

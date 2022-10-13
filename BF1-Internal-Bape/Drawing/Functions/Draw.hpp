@@ -1,21 +1,24 @@
-/*
+﻿/*
 * Draw.hpp : Defines the external linkage for the Wrapped ImGui Drawing functions 
 */
 
-#ifndef _DRAW_HPP
-#define _DRAW_HPP
+
 
 /* Includes for this header */
 #include <Windows.h>
 #include <string>
+#include<tchar.h>
+#include <TlHelp32.h>
+#include "../../Hooks/DirectX 11 Hook/DXHook.hpp"
 #include "../../Vendors/ImGui/imgui.h"
 #include "../../Math/Vec3.hpp"
 #include "../../SDK/sdk.hpp"
+#ifndef _DRAW_HPP
+#define _DRAW_HPP
 
 #define M_PI 3.141592//65358979323846264338327950288
 
-/* Flags containing different drawing styles that can be specified
-��ͬ�Ļ滭��ʽ*/
+/* flags包含不同的绘画格式*/
 enum DrawFlags
 {
 	SOLID = 1 << 0,
@@ -26,6 +29,7 @@ enum DrawFlags
 	FILLED = 1 << 5
 };
 DEFINE_ENUM_FLAG_OPERATORS(DrawFlags);
+
 
 class Draw
 {
@@ -39,6 +43,8 @@ public:
 	void XCrossHair(ImColor col);
 	void Rectangle3D(Vec3 location, ImColor col);
 	void HealthBar(ImVec2 pos, int h, float health, float mHealth);
+	
+
 };
 
 extern Draw* draw;

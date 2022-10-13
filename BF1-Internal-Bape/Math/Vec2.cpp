@@ -66,7 +66,7 @@ Vec2 Vec2::Normalized() const
 /* Implementation for Vec2.ToString */
 std::string Vec2::ToString() const
 {
-	/* Convert to a printable string */
+	/*×ª»»Îª×Ö·û´® */
 	return "Vec2(" + std::to_string(this->x) + ", " + std::to_string(this->y) + ")";
 }
 

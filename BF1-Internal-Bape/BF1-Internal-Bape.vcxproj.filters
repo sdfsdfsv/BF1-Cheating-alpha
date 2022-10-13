@@ -120,6 +120,9 @@
     <ClCompile Include="Config\Config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Drawing\Functions\ljx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Vendors\ImGui\imconfig.h">
@@ -474,6 +477,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Aimbot\Aimbot.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Drawing\Functions\ljx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

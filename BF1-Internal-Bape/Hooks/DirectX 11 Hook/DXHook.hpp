@@ -19,6 +19,8 @@ typedef HRESULT(__stdcall* Present) (IDXGISwapChain* pSwapChain, UINT SyncInterv
 typedef LRESULT(CALLBACK* WNDPROC)(HWND, UINT, WPARAM, LPARAM);
 typedef uintptr_t PTR;
 
+
+
 /*
 * DirectX hooking class with all the needed functions
 */
@@ -38,6 +40,7 @@ public: /* Public varibles for this class */
 	ID3D11DeviceContext* p_context = NULL;
 	ID3D11RenderTargetView* main_render_target_view;
 	bool initialized = false;
+	
 };
 
 extern DXHook* dx_hook;

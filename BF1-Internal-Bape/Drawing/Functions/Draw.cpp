@@ -1,19 +1,21 @@
-/*
+﻿/*
 * Draw.cpp : Contains the implementation for the wrapped ImGui Drawing functions 
 */
 
 /* Includes for this file */
 #include "Draw.hpp"
 #include "../../Vendors/ImGui/imgui_internal.h"
-
+#include "../../Global.hpp"
+#include "ljx.h"
 /* Implementation for drawing text */
 void Draw::Text(ImVec2 pos, ImColor col, std::string str, DrawFlags flags)
 {
-	/* Check that text is within the bounds of the screen */
-	if ((pos.x <= 0.0 || pos.y <= 0.0) || (pos.x >= GetSystemMetrics(SM_CXSCREEN) || pos.y >= GetSystemMetrics(SM_CYSCREEN)))
+	
+	/* Check if the rect is within bounds of the render frame */
+	/*if ((pos.x >= rect.right || pos.y >= rect.top) || (pos.x <= rect.left || pos.y <= rect.bottom))
 	{
 		if (flags & BOUNDS) return;
-	}
+	}*/
 
 	/* Get the ImGui window class */
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -39,12 +41,12 @@ void Draw::Text(ImVec2 pos, ImColor col, std::string str, DrawFlags flags)
 /* Implementation for drawing a line */
 void Draw::Line(ImVec2 pt, ImVec2 pb, ImColor col, int thickness, DrawFlags flags)
 {
+	
 	/* Check if the rect is within bounds of the render frame */
-	if ((pt.x <= 0.0 || pt.y <= 0.0) || (pt.x >= GetSystemMetrics(SM_CXSCREEN) || pt.y >= GetSystemMetrics(SM_CYSCREEN))
-		|| (pb.x <= 0.0 || pb.y <= 0.0) || (pb.x >= GetSystemMetrics(SM_CXSCREEN) || pb.y >= GetSystemMetrics(SM_CYSCREEN)))
+	/*if ((pt.x >= rect.right || pt.y >= rect.top) || (pb.x <= rect.left || pb.y <= rect.bottom))
 	{
 		if (flags & BOUNDS) return;
-	}
+	}*/
 
 	/* Get the ImGui window class */
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -63,11 +65,12 @@ void Draw::Line(ImVec2 pt, ImVec2 pb, ImColor col, int thickness, DrawFlags flag
 /* Implementation for drawing a circle */
 void Draw::CircleFilled(ImVec2 pos, ImColor col, int radius, int thickness, int segments, DrawFlags flags)
 {
-	/* Check that text is within the bounds of the screen */
-	if ((pos.x <= 0.0 || pos.y <= 0.0) || (pos.x >= GetSystemMetrics(SM_CXSCREEN) || pos.y >= GetSystemMetrics(SM_CYSCREEN)))
+	
+	/* Check if the rect is within bounds of the render frame */
+	/*if ((pos.x >= rect.right || pos.y >= rect.top) || (pos.x <= rect.left || pos.y <= rect.bottom))
 	{
 		if (flags & BOUNDS) return;
-	}
+	}*/
 
 	/* Get the ImGui window class */
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -95,12 +98,7 @@ void Draw::CircleFilled(ImVec2 pos, ImColor col, int radius, int thickness, int 
 /* Implementation for drawing a rectangle */
 void Draw::Rectangle(ImVec2 pt, ImVec2 pb, ImColor col, int thickness, float rounding, ImDrawCornerFlags corner_flags, DrawFlags flags)
 {
-	/* Check if the rect is within bounds of the render frame */
-	if ((pt.x <= 0.0 || pt.y <= 0.0) || (pt.x >= GetSystemMetrics(SM_CXSCREEN) || pt.y >= GetSystemMetrics(SM_CYSCREEN))
-		|| (pb.x <= 0.0 || pb.y <= 0.0) || (pb.x >= GetSystemMetrics(SM_CXSCREEN) || pb.y >= GetSystemMetrics(SM_CYSCREEN)))
-	{
-		if (flags & BOUNDS) return;
-	}
+	
 
 	/* Get the ImGui window class */
 	ImGuiWindow* window = ImGui::GetCurrentWindow();
@@ -137,7 +135,7 @@ void Draw::Circle(ImVec2 pos, float points, float radius, ImColor color) {
 	{
 		ImVec2 start(radius * cosf(a) + pos.x, radius * sinf(a) + pos.y);
 		ImVec2 end(radius * cosf(a + step) + pos.x, radius * sinf(a + step) + pos.y);
-		Draw::Line(start, end, ImColor(1.0f, 0.0f, 0.0f), 1.0f, NONE);
+		Draw::Line(start, end, color, 1, NONE);
 	}
 }
 
@@ -145,22 +143,11 @@ void Draw::Circle(ImVec2 pos, float points, float radius, ImColor color) {
 void Draw::XCrossHair(ImColor col)
 {
 	/* Create a pos vector (( Center of the screen )) */
-	ImVec2 center = ImVec2(GetSystemMetrics(SM_CXSCREEN) / 2, GetSystemMetrics(SM_CYSCREEN) / 2);
-
-	/* Draw crosshair outline -- yes, drawrect would save 4 lines here, idc nigger */
-	ImColor outlinecol = ImColor(0.0f, 0.0f, 0.0f);
-	/* HORIZONTAL */
-	this->Line(ImVec2(center.x - 6, center.y - 1), ImVec2(center.x + 5, center.y - 1), outlinecol, 1, NONE);
-	this->Line(ImVec2(center.x - 6, center.y), ImVec2(center.x + 5, center.y), outlinecol, 1, NONE);
-	this->Line(ImVec2(center.x - 6, center.y + 1), ImVec2(center.x + 5, center.y + 1), outlinecol, 1, NONE);
-	/* VERTICAL */
-	this->Line(ImVec2(center.x - 2, center.y - 5), ImVec2(center.x - 2, center.y + 6), outlinecol, 1, NONE);
-	this->Line(ImVec2(center.x - 1, center.y - 5), ImVec2(center.x - 1, center.y + 6), outlinecol, 1, NONE);
-	this->Line(ImVec2(center.x, center.y - 5), ImVec2(center.x , center.y + 6), outlinecol, 1, NONE);
-
+	
+	ImVec2 center = global->display_size;
 	/* Draw crosshair */
-	this->Line(ImVec2(center.x - 5, center.y), ImVec2(center.x + 4, center.y), col, 1, NONE); // horizontal
-	this->Line(ImVec2(center.x - 1, center.y - 4), ImVec2(center.x - 1, center.y + 5), col, 1, NONE); // vertical
+	this->Line(ImVec2(center.x - 5+ global->drawoffx, center.y+ global->drawoffy), ImVec2(center.x + 4+ global->drawoffx, center.y+ global->drawoffy), col, 2, NONE); // horizontal
+	this->Line(ImVec2(center.x - 1+ global->drawoffx, center.y - 4+ global->drawoffy), ImVec2(center.x - 1+ global->drawoffx, center.y + 5+ global->drawoffy), col, 2, NONE); // vertical
 }
 
 void Draw::Rectangle3D(Vec3 location, ImColor col) {
@@ -169,13 +156,15 @@ void Draw::Rectangle3D(Vec3 location, ImColor col) {
 
 void Draw::HealthBar(ImVec2 pos, int h, float health, float mHealth) {
 	float flBoxes = std::ceil(health / 10.f);
-	float flX = pos.x - 7 - h / 4.f; float flY = pos.y - 1;
+	float flX = pos.x;
+	//-7 - h / 4.f;
+	float flY = pos.y - 1;
 	float flHeight = h / 10.f;
 	float flMultiplier = 12 / 360.f; flMultiplier *= flBoxes - 1;
 	ImColor ColHealth(0.0f, 1.0f, 0.0f);
 
-	draw->Rectangle(ImVec2(flX, flY), ImVec2(flX, h + 2), ImColor(0.8f, 0.8f, 0.8f, 0.5), 1.0f, 0, NONE, SOLID); /* background */
-	draw->Rectangle(ImVec2(flX, flY), ImVec2(flX, h + 2), ImColor(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0, OUTLINE, SOLID); /* outline */
+	draw->Rectangle(ImVec2(flX, flY), ImVec2(flX, flY + 2), ImColor(0.8f, 0.8f, 0.8f, 0.5), 1.0f, 0, NONE, SOLID); /* background */
+	draw->Rectangle(ImVec2(flX, flY), ImVec2(flX, flY + 2), ImColor(0.0f, 0.0f, 0.0f, 1.0f), 1.0f, 0, OUTLINE, SOLID); /* outline */
 	draw->Rectangle(ImVec2(flX + 1, flY), ImVec2(flX, flHeight * flBoxes + 1), ColHealth, 1.0f, 0.0f, NONE, SOLID); /* green health bar*/
 
 	for (int i = 0; i < 10; i++)
@@ -183,12 +172,12 @@ void Draw::HealthBar(ImVec2 pos, int h, float health, float mHealth) {
 }
 
 void Draw::CornerRectangle(ImVec2 pt, ImVec2 pb, ImColor col, float length,int thickness,ImDrawCornerFlags corner_flags, DrawFlags flags) {
+	
 	/* Check if the rect is within bounds of the render frame */
-	if ((pt.x <= 0.0 || pt.y <= 0.0) || (pt.x >= GetSystemMetrics(SM_CXSCREEN) || pt.y >= GetSystemMetrics(SM_CYSCREEN))
-		|| (pb.x <= 0.0 || pb.y <= 0.0) || (pb.x >= GetSystemMetrics(SM_CXSCREEN) || pb.y >= GetSystemMetrics(SM_CYSCREEN)))
+	/*if ((pt.x >= rect.right || pt.y >= rect.top) || (pb.x <= rect.left || pb.y <= rect.bottom))
 	{
 		if (flags & BOUNDS) return;
-	}
+	}*/
 
 	/* Get the ImGui window class */
 	ImGuiWindow* window = ImGui::GetCurrentWindow();

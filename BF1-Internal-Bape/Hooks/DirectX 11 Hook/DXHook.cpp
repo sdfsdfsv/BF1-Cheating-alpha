@@ -97,6 +97,7 @@ HRESULT __stdcall HKPresent(IDXGISwapChain* pSwapChain, UINT SyncInterval, UINT 
 * Implementation for the actual initialization function 
 * The tasks vector is for the functions that you want to be called inside the Present hook
 * Eg UI, Cheat-Visuals or other shit 
+* 
 */
 bool DXHook::Init(std::vector<std::function<void()>> tasks)
 {
@@ -129,6 +130,7 @@ bool DXHook::Init(std::vector<std::function<void()>> tasks)
 /*
 * Implementation for DXHook->ImGuiInit()
 * Function initiates ImGui with the Device and context of the present hook
+* 
 */
 void DXHook::InitImGui()
 {

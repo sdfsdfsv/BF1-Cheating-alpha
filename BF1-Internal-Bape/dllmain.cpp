@@ -1,14 +1,12 @@
-/*
+﻿/*
 * dllmain.cpp : Defines the entry point for this binary and the main thread
 */
 
-/* Includes for this file */
 #include <windows.h>
 #include <vector>
 #include <functional>
 #include <chrono>
 #include <thread>
-
 #include "Utility/Console/Console.hpp"
 #include "Utility/Logging/Logging.hpp"
 #include "Hooks/DirectX 11 Hook/DXHook.hpp"
@@ -17,24 +15,21 @@
 #include "Global.hpp"
 #include "Utility/Discord RPC/Discord.hpp"
 #include "Aimbot/Aimbot.hpp"
-
+#include "Drawing/Functions/ljx.h"
 bool pressed = false;
 
 /*
-* ������
+* 主程序
 * Main thread for this binary, bootstrapped off the API entry point
 */
-inline void Main(HMODULE hModule)
-{
-
-	/* Allocate a console window to the target process */
-	Console::Allocate("Debug Console");
+inline void Main(HMODULE hModule){
 	
-	/* Log the creation of the console window */
-	Log::Success("Console Allocated");
+	//Console::Allocate("Debug Console");/* Allocate a console window to the target process */
+	//
+	//Log::Success("Console Allocated");/* Log the creation of the console window */
 
-	/* Log the change in discord Status */
-	Log::Initialize("Discord RPC");
+	///* Log the change in discord Status */
+	//Log::Initialize("Discord RPC");
 
 	/* Initialize discord RPC inside a scope because thats hot */
 	{
@@ -54,30 +49,30 @@ inline void Main(HMODULE hModule)
 		discord_rpc.Update(&rpc);
 	}
 
-	/* Initialize the present hook */
-	{
-		/* Populate this with drawing tasks */
-		std::vector<std::function<void()>> task_list = { Visual::Draw, Menu::Draw };
-
-		/* Init the present hook */
-		dx_hook->Init(task_list);
+	
+	{/* 初始化钩子 */
+		std::vector<std::function<void()>> task_list = { Visual::Draw, Menu::Draw };/* Populate this with drawing tasks */
+		dx_hook->Init(task_list);/* 初始化钩子 */
 	}
 
-	/* Create aimbot thread */
-	{
+
+	ljx::bfhandle=ljx::GetMainWindow();
+	{/* 创建自瞄进程 */
+		std::thread t_getrect(&Global::grect);
+		t_getrect.detach();
 		std::thread t_aimbot(&Aimbot::Aim);
 		t_aimbot.detach();
+		
 	}
 
-	/* Initiate an infinite loop */
-	while (true)
-	{
+	
+	while (true){
 		/* Exit thread if insert is press */
-		if (GetAsyncKeyState(VK_END) & 0x8000) break;
+		if (GetAsyncKeyState(VK_END)) break;
 
-		/* Toggle menu status */
+		/*切换主菜单状态 */
 		pressed = false;
-		while (GetAsyncKeyState(VK_INSERT) & 0x8000)
+		while (GetAsyncKeyState(VK_INSERT))
 		{
 			if (!pressed) {
 				global->is_menu_open = !global->is_menu_open;
@@ -86,25 +81,25 @@ inline void Main(HMODULE hModule)
 			}
 		}
 
-		/* Prevent hot looping */
+		/* 防止hot looping*/
 		SleepEx(1, true);
 	}
 
-	/* Log that the main threading has been exited */
+	/* 提示主进程已退出 */
 	Log::Warn("Main thread has been exited. [Deallocating console][Freeing library]");
 
 	/* Remove the present hook */
 	dx_hook->Remove();
 
 	/* Deallocate the console window from the target process */
-	Console::DeAllocate();
+	//Console::DeAllocate();
 
 	/* Exit thread and close handle */
 	FreeLibraryAndExitThread(hModule, 0);
 }
 
 /*
-* ����������
+* 启动主进程
 * Entrypoint for the Dynamic link library.
 * Will boot strap the main thread
 */

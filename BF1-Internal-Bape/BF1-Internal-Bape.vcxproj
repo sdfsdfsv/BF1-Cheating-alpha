@@ -157,6 +157,7 @@
     <ClCompile Include="Config\Config.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="Drawing\Functions\Draw.cpp" />
+    <ClCompile Include="Drawing\Functions\ljx.cpp" />
     <ClCompile Include="Drawing\Menu\Menu.cpp" />
     <ClCompile Include="Drawing\Visuals\Visuals.cpp" />
     <ClCompile Include="Global.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="Config\Config.hpp" />
     <ClInclude Include="Drawing\Font.hpp" />
     <ClInclude Include="Drawing\Functions\Draw.hpp" />
+    <ClInclude Include="Drawing\Functions\ljx.h" />
     <ClInclude Include="Drawing\Menu\Menu.hpp" />
     <ClInclude Include="Drawing\Visuals\Visuals.hpp" />
     <ClInclude Include="Global.hpp" />

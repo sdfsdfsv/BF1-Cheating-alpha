@@ -5,13 +5,16 @@
 #include <Windows.h>
 #include "../Vendors/ImGui/imgui.h"
 #include "sdk.hpp"
+#include "../Drawing/Functions/Draw.hpp"
+#include "../Drawing/Functions/ljx.h"
 
 typedef DWORD64 QWORD;
 typedef BYTE _BYTE;
 typedef WORD _WORD;
 typedef DWORD _DWORD;
 typedef QWORD _QWORD;
-
+//asdasdasdasdasdsadasdasdasas
+//asdassdadadadaasdasdasdasdas
 inline hashtable_iterator<_QWORD>* __fastcall hashtable_find(hashtable<_QWORD>* table, hashtable_iterator<_QWORD>* iterator, _QWORD key)
 {
 	unsigned int mnBucketCount = table->mnBucketCount;
@@ -20,20 +23,16 @@ inline hashtable_iterator<_QWORD>* __fastcall hashtable_find(hashtable<_QWORD>* 
 
 	hash_node<_QWORD>* node = table->mpBucketArray[startCount];
 
-	if (IsValidPtr(node) && node->mValue.first)
-	{
-		while (key != node->mValue.first)
-		{
+	if (IsValidPtr(node) && node->mValue.first){
+		while (key != node->mValue.first){
 			node = node->mpNext;
-			if (!node || !IsValidPtr(node)
-				)
+			if (!node || !IsValidPtr(node))
 				goto LABEL_4;
 		}
 		iterator->mpNode = node;
 		iterator->mpBucket = &table->mpBucketArray[startCount];
 	}
-	else
-	{
+	else{
 	LABEL_4:
 		iterator->mpNode = table->mpBucketArray[mnBucketCount];
 		iterator->mpBucket = &table->mpBucketArray[mnBucketCount];
@@ -45,11 +44,9 @@ inline void* DecryptPointer(_QWORD EncryptedPtr, _QWORD PointerKey)
 {
 	_QWORD pObfuscationMgr = *(_QWORD*)OFFSET_OBFUSCATEMGR;
 
-	if (!IsValidPtr(pObfuscationMgr))
-		return nullptr;
+	if (!IsValidPtr(pObfuscationMgr))return nullptr;
 
-	if (!(EncryptedPtr & 0x8000000000000000))
-		return nullptr; //invalid ptr
+	if (!(EncryptedPtr & 0x8000000000000000))return nullptr; //invalid ptr
 
 	_QWORD hashtableKey = PointerKey ^ *(_QWORD*)(pObfuscationMgr + 0x70);
 
@@ -57,8 +54,7 @@ inline void* DecryptPointer(_QWORD EncryptedPtr, _QWORD PointerKey)
 	hashtable_iterator<_QWORD> iterator = {};
 
 	hashtable_find(table, &iterator, hashtableKey);
-	if (iterator.mpNode == table->mpBucketArray[table->mnBucketCount])
-		return nullptr;
+	if (iterator.mpNode == table->mpBucketArray[table->mnBucketCount])return nullptr;
 
 	_QWORD EncryptionKey = hashtableKey ^ (_QWORD)(iterator.mpNode->mValue.second);
 	EncryptionKey ^= (7 * EncryptionKey);
@@ -68,8 +64,7 @@ inline void* DecryptPointer(_QWORD EncryptedPtr, _QWORD PointerKey)
 	BYTE* pEncryptedPtrBytes = (BYTE*)&EncryptedPtr;
 	BYTE* pKeyBytes = (BYTE*)&EncryptionKey;
 
-	for (char i = 0; i < 7; i++)
-	{
+	for (char i = 0; i < 7; i++){
 		pDecryptedPtrBytes[i] = (pKeyBytes[i] * 0x7A) ^ (pEncryptedPtrBytes[i] + pKeyBytes[i]);
 		EncryptionKey += 8;
 	}
@@ -135,8 +130,7 @@ inline ClientPlayer* GetLocalPlayer(void)
 	hashtable_iterator<_QWORD> iterator = { 0 };
 
 	hashtable_find(table, &iterator, LocalPlayerListKey);
-	if (iterator.mpNode == table->mpBucketArray[table->mnBucketCount])
-		return nullptr;
+	if (iterator.mpNode == table->mpBucketArray[table->mnBucketCount])return nullptr;
 
 	_QWORD EncryptedPlayerMgr = (_QWORD)iterator.mpNode->mValue.second;
 	if (!IsValidPtr(EncryptedPlayerMgr)) return nullptr;
@@ -147,7 +141,7 @@ inline ClientPlayer* GetLocalPlayer(void)
 	return EncryptedPlayerMgr__GetPlayer(EncryptedPlayerMgr, 0);
 }
 
-/* Implementation for World to screen */
+/*世界坐标转屏幕 */
 inline bool W2S(Vec3 position, Vec2& out)
 {
 	/* Get the game render instance */
@@ -156,17 +150,15 @@ inline bool W2S(Vec3 position, Vec2& out)
 	/* Validate the game render instance */
 	if (!IsValidPtr(game_render) || !IsValidPtr(game_render->renderView)) return false;
 
-	/* Get the view projection */
 	auto view_projection = game_render->renderView->viewProj;
 
-	/* Retrieve the screen size */
-	Vec2 display_size = Vec2(GetSystemMetrics(SM_CXSCREEN) / 2, GetSystemMetrics(SM_CYSCREEN) / 2);
+	ImVec2 display_size = global->display_size;
 
 	/* Calculate the w component of the vector */
 	float w = view_projection.m[0][3] * position.x + view_projection.m[1][3] * position.y + view_projection.m[2][3] * position.z + view_projection.m[3][3];
 
 	/* Check that player isn't behind us */
-	if (w < 0.65f) return false;
+	if (w < 0.3f) return false;
 
 	/* Calculate the x component of the vector */
 	float x = view_projection.m[0][0] * position.x + view_projection.m[1][0] * position.y + view_projection.m[2][0] * position.z + view_projection.m[3][0];
@@ -174,19 +166,18 @@ inline bool W2S(Vec3 position, Vec2& out)
 	/* Calculate the y component of the vector */
 	float y = view_projection.m[0][1] * position.x + view_projection.m[1][1] * position.y + view_projection.m[2][1] * position.z + view_projection.m[3][1];
 
-	out = Vec2(display_size.x + display_size.x * x / w, display_size.y - display_size.y * y / w);
+	out = Vec2(display_size.x + x * display_size.x / w , display_size.y - y * display_size.y / w );
 
 	/* Return success */
 	return true;
 }
-
 
 inline float CalculateDistance(Vec3 local_position, Vec3 entity_position)
 {
 	float xx = entity_position.x - local_position.x;
 	float yy = entity_position.y - local_position.y;
 	float zz = entity_position.z - local_position.z;
-	return sqrt(xx * xx + yy * yy + zz * zz);
+	return xx * xx + yy * yy + zz * zz;
 }
 
 inline void ConnectBones(ClientSoldierEntity* entity, UpdatePoseResultData::BONES bone1, UpdatePoseResultData::BONES bone2, ImVec4 col)
@@ -209,8 +200,8 @@ inline void ConnectBones(ClientSoldierEntity* entity, UpdatePoseResultData::BONE
 	Vec2 bscreen2;
 	if (!W2S(bone2_position, bscreen2))
 		return;
-
-	//Draw::Line(ImVec2(bscreen1.x, bscreen1.y), ImVec2(bscreen2.x, bscreen2.y), (ImColor)col, 3);
+	Draw d=Draw();
+	d.Line(ImVec2(bscreen1.x , bscreen1.y), ImVec2(bscreen2.x, bscreen2.y), col, 2, NONE);
 }
 
 inline void DrawSkeleton(ClientSoldierEntity* entity, ImVec4 col)
