@@ -1,11 +1,6 @@
 # BF1-Cheating-alpha
 ## bf1 by zju-ljx
 
-| this | is | my | fst |
-| --- | --- | --- | --- |
-| hand | made | large | fps |
-| cheat | star | IF | like |
-|it!!!|||
 
 
 # contains:
@@ -32,6 +27,5 @@ spawn guns
 
 ### thank to uc
 
-[90+ PERCENT accuracy](www.baidu.com)
-[90+ PERCENT accuracy](www.baidu.com)
-[90+ PERCENT accuracy](www.baidu.com)
+[90+ PERCENT accuracy]()
+
