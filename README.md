@@ -1,5 +1,6 @@
-# BF1-Cheating-alpha
-## bf1 by zju-ljx
+# BF1-Cheats-2.0
+
+## by zju-ljx
 
 
 
@@ -23,9 +24,7 @@ damage multiplier
 
 spawn guns
 
-### powered by DDL injector and imgui
-
-### thank to uc
+### thank to uc--iraizo
 
 [90+ PERCENT accuracy]()
 
