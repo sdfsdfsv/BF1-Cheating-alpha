@@ -6,7 +6,7 @@
 
 # contains:
 
-aimbot(90+ percent accuracy (in short fight))
+aimbot(90+ percent accuracy (in short fight))--press mouse x1(an extra button on mouse) to shoot 
 
 ESP(100 percent clear)
 
