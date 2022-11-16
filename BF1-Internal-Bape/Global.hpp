@@ -17,6 +17,7 @@ public:
 	
 	/* Aim */
 	bool aim_enabled = false;
+	bool budamage_enabled = false;
 	int aim_key = 0x70;
 
 	/* Visuals */
@@ -42,11 +43,15 @@ public:
 	ImColor c_e_visuals_box = ImColor(1.0f, 1.0f, 1.0f);
 	ImColor c_e_visuals_box_visible = ImColor(1.0f, 1.0f, 1.0f);
 
-	float standoffset=1.45f, crouchoffset=1.0f, lyoffset=0.35f;
-	int aimoffx = 0, aimoffy = 15;
-	float aimpredict = 0.35;
-	int drawoffx = -8, drawoffy = -24;
+	float standoffset=1.45f, crouchoffset=1.15, lyoffset=0.35f;
+	int aimoffx = 0, aimoffy = 9;
+	float aimpredict = 0.0;
+	int drawoffx = -8, drawoffy = -0;
+	int budamage = 8888;
 	ImVec2 display_size=ImVec2(1000,1000);
+	int aimdectsec = 4;
+	int presssec = 3;
+	long top, left;
 	static void grect(void);
 };
 

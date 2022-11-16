@@ -7,6 +7,8 @@ void Global::grect(void) {
 		RECT rect;
 		GetWindowRect(ljx::bfhandle, &rect);
 		global->display_size = ImVec2((rect.right - rect.left) / 2, (rect.bottom - rect.top) / 2);
-		Sleep(5000);
+		global->top = rect.top;
+		global->left = rect.left;
+		Sleep(10000);
 	}
 }

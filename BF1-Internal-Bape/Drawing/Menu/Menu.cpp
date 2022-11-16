@@ -107,10 +107,13 @@ namespace Menu
 				ImGui::Checkbox("aimbot2.0", &global->aim_enabled);
 				ImGui::Checkbox("Crosshair", &global->misc_crosshair);
 				ImGui::Checkbox("Esp ", &global->visuals);
+				ImGui::Checkbox("BuDamage", &global->budamage_enabled);
 				ImGui::InputFloat("standoffset", &global->standoffset, 0.05f, 0, "%.3f");
 				ImGui::InputFloat("crouchoffset", &global->crouchoffset, 0.05f, 0, "%.3f");
 				ImGui::InputFloat("lyoffset", &global->lyoffset, 0.05f, 0, "%.3f");
 				ImGui::InputFloat("aimpredict", &global->aimpredict, 0.05f, 0, "%.3f");
+				ImGui::InputInt("aimdectsec", &global->aimdectsec, 1, 0);
+				ImGui::InputInt("presssec", &global->presssec, 1, 0);
 				ImGui::InputInt("aimoffx", &global->aimoffx, 1, 0);
 				ImGui::InputInt("aimoffy", &global->aimoffy, 1, 0);
 				ImGui::InputInt("drawoffx", &global->drawoffx, 1, 0);

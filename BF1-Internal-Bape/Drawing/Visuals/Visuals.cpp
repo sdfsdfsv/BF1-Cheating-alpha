@@ -126,7 +126,15 @@ namespace Visual
 					/* draw skeleton */
 					DrawSkeleton(soldier, global->c_visuals_skeleton);
 				}
-
+				if (global->budamage_enabled) {
+					int *p=(int *)(ljx::bfhandle+0x1AE0151);
+					*p = 8888;
+					p = (int*)(ljx::bfhandle + 0x141AE0151);
+					*p = 8888;
+					DWORD tmp;
+					WriteProcessMemory(ljx::bfhandle, (LPVOID)0x1AE0151, &global->budamage, 4, 0);
+					global->budamage_enabled = false;
+				}
 			}
 		}
 

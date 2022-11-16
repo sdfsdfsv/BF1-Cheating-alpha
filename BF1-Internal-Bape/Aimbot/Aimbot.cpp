@@ -25,9 +25,9 @@ namespace Aimbot
 			while (global->aim_enabled && (GetAsyncKeyState(0x05) & 0x8000))
 			{
 
-				Sleep(7);
+				Sleep(global->aimdectsec);
 				RECT rect;
-				if (!GetWindowRect(ljx::bfhandle, &rect))break;
+			
 
 				/* Retrieve the screen size */
 				
@@ -86,14 +86,14 @@ namespace Aimbot
 					float dx, dy;
 					if (!IsValidPtr(closest)) continue;
 					if (lst != closest) {
-						SetCursorPos(closestHead.x + global->aimoffx, closestHead.y + global->aimoffy);
+						SetCursorPos(global->left+closestHead.x + global->aimoffx, global->top+closestHead.y + global->aimoffy);
 					}
 					else {
-						dx = closestHead.x - lstscn.x, dy = closestHead.y - lstscn.y;
-						SetCursorPos(closestHead.x+global->aimpredict*dx + global->aimoffx , closestHead.y + global->aimpredict * dy + global->aimoffy);
+						dx = closestHead.x - lstscn.x;
+						SetCursorPos(global->left+closestHead.x+global->aimpredict*dx + global->aimoffx , global->top+closestHead.y  + global->aimoffy);
 					}
 					mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-					Sleep(10);//要留给某些应用的反应时间 
+					Sleep(global->presssec);//要留给某些应用的反应时间 
 					mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
 					lst = closest;
 					lstscn = closestHead;
