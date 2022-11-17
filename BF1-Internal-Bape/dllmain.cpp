@@ -62,9 +62,10 @@ inline void Main(HMODULE hModule){
 		t_getrect.detach();
 		std::thread t_aimbot(&Aimbot::Aim);
 		t_aimbot.detach();
-		
+		std::thread t_aimdect(&Aimbot::AimDetect);
+		t_aimdect.detach();
 	}
-
+	global->loadData();
 	
 	while (true){
 		/* Exit thread if insert is press */

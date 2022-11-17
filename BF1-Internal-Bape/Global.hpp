@@ -43,16 +43,18 @@ public:
 	ImColor c_e_visuals_box = ImColor(1.0f, 1.0f, 1.0f);
 	ImColor c_e_visuals_box_visible = ImColor(1.0f, 1.0f, 1.0f);
 
-	float standoffset=1.45f, crouchoffset=1.15, lyoffset=0.35f;
+	float standoffset=1.27f, crouchoffset=1.05, lyoffset=0.15f;
 	int aimoffx = 0, aimoffy = 9;
 	float aimpredict = 0.0;
-	int drawoffx = -8, drawoffy = -0;
+	int drawoffx = 0, drawoffy = -0;
 	int budamage = 8888;
 	ImVec2 display_size=ImVec2(1000,1000);
-	int aimdectsec = 4;
+	int aimdectsec = 4, aimshotsec = 4;
 	int presssec = 3;
 	long top, left;
 	static void grect(void);
+	void saveData(void);
+	void loadData(void);
 };
 
 extern Global* global;

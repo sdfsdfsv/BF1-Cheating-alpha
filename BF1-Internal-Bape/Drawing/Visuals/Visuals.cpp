@@ -72,20 +72,26 @@ namespace Visual
 				if (soldier->IsDead()) continue;
 
 				/* World to screen the players position */
-				Vec3 headpos = soldier->location;
+				Vec3 headpos;
 				Vec2 base_screen, head_screen;
 
 				/* World to screen the players head positon */
-				if (soldier->poseType == 0) headpos.y += global->standoffset;
-				else if (soldier->poseType == 1) headpos.y += global->crouchoffset;
-				else if (soldier->poseType == 2) headpos.y += global->lyoffset;
 				
+				headpos = soldier->location;
+				switch (soldier->poseType)
+				{
+				case 0:headpos.y += global->standoffset; break;
+				case 1:headpos.y += global->crouchoffset; break;
+				case 2:headpos.y += global->lyoffset; break;
+				default:break;
+				};
+
+				
+				if (!W2S(headpos, head_screen)) continue;
 
 				if (global->visuals_headcircle) {
-					/* convert vec2 to imvec2 */
-					if (!W2S(headpos, head_screen)) continue;
 					/* draw a circle @ head position */
-					draw->Circle(ImVec2(head_screen.x+global->drawoffx,head_screen.y+global->drawoffy), 4, 5, global->c_visuals_headcircle);
+					draw->Circle(ImVec2(global->left+head_screen.x+global->drawoffx, global->top+head_screen.y+global->drawoffy), 4, 5, global->c_visuals_headcircle);
 				}
 
 				if (global->visuals_box) {
@@ -102,7 +108,7 @@ namespace Visual
 						boxColor = global->c_t_visuals_box;
 
 					if (!soldier->occluded) boxColor = global->c_e_visuals_box_visible;
-					draw->Rectangle(ImVec2(c1.x + 10+global->drawoffx, c1.y+ global->drawoffy), ImVec2(c2.x+ global->drawoffx - 10,c2.y+ global->drawoffy), boxColor, 2, 1.0f, NONE, NONE);
+					draw->Rectangle(ImVec2(global->left+c1.x + 10+global->drawoffx, global->top+c1.y+ global->drawoffy), ImVec2(c2.x+ global->drawoffx - 10,c2.y+ global->drawoffy), boxColor, 2, 1.0f, NONE, NONE);
 				}
 
 				//if (global->visuals_healthbar) { /* broken */
@@ -119,7 +125,7 @@ namespace Visual
 					sprintf(buffer, "[%dHP]", (int)soldier->healthcomponent->m_Health);
 
 			
-					draw->Text(ImVec2(head_screen.x + global->drawoffx, head_screen.y + global->drawoffy), global->c_visuals_info, buffer, CENTERED | OUTLINE);
+					draw->Text(ImVec2(global->left+head_screen.x + global->drawoffx, global->top+head_screen.y + global->drawoffy), global->c_visuals_info, buffer, CENTERED | OUTLINE);
 				}
 
 				if (global->visuals_skeleton) {

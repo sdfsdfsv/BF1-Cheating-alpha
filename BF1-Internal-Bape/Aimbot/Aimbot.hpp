@@ -11,6 +11,7 @@
 namespace Aimbot
 {
 	void Aim();
+	void AimDetect();
 }
 
 #endif // _AIMBOT_HPP

@@ -428,7 +428,7 @@ public:
 	float Length(Vec2 origin, Vec2 target);
 
 	bool IsValid() {
-		return (this->healthcomponent->m_Health > 0.1f && this->healthcomponent->m_Health <= this->healthcomponent->m_MaxHealth);
+		return (this->healthcomponent->m_Health > 0.1f && this->healthcomponent->m_Health <= 100.f);
 	}
 	bool IsDead() {
 		return !(this->healthcomponent->m_Health > 0.1f);

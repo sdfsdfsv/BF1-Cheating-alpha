@@ -78,7 +78,7 @@ namespace Menu
 		ApplyStyle();
 
 		/* 开始 */
-		ImGui::Begin("God of Verdun by ljx", NULL, ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoCollapse);
+		ImGui::Begin("God of Verdun by ljx", NULL, ImGuiWindowFlags_NoCollapse);
 
 		/* 设置大小位置 */
 		float menux = 250.f; float menuy = 220.f;
@@ -89,15 +89,17 @@ namespace Menu
 			ImGui::Separator();
 
 			/* "Tab" buttons */
-			if (ImGui::Button("Aim", ImVec2(45, 25))) 
+			if (ImGui::Button("Aim", ImVec2(50, 25))) 
 				m_CurrentTab = 1; 
 			ImGui::SameLine(0.0, 3.0f);
-			if (ImGui::Button("Visuals", ImVec2(45, 25))) 
+			if (ImGui::Button("Visuals", ImVec2(50, 25))) 
 				m_CurrentTab = 2;
 			ImGui::SameLine(0.0, 3.0f);
-			if (ImGui::Button("Colors", ImVec2(45, 25))) 
+			if (ImGui::Button("Colors", ImVec2(50, 25))) 
 				m_CurrentTab = 3;
-
+			if (ImGui::Button("Save", ImVec2(50, 25)))
+				global->saveData();
+			
 			ImGui::Separator();
 			//Config config;
 			RECT rect;
@@ -107,12 +109,17 @@ namespace Menu
 				ImGui::Checkbox("aimbot2.0", &global->aim_enabled);
 				ImGui::Checkbox("Crosshair", &global->misc_crosshair);
 				ImGui::Checkbox("Esp ", &global->visuals);
-				ImGui::Checkbox("BuDamage", &global->budamage_enabled);
+				if (ImGui::Button("Save", ImVec2(50, 25)))
+					global->saveData();
+				if (ImGui::Button("Load", ImVec2(50, 25)))
+					global->loadData();
+				//ImGui::Checkbox("BuDamage", &global->budamage_enabled);
 				ImGui::InputFloat("standoffset", &global->standoffset, 0.05f, 0, "%.3f");
 				ImGui::InputFloat("crouchoffset", &global->crouchoffset, 0.05f, 0, "%.3f");
 				ImGui::InputFloat("lyoffset", &global->lyoffset, 0.05f, 0, "%.3f");
 				ImGui::InputFloat("aimpredict", &global->aimpredict, 0.05f, 0, "%.3f");
 				ImGui::InputInt("aimdectsec", &global->aimdectsec, 1, 0);
+				ImGui::InputInt("aimshotsec", &global->aimshotsec, 1, 0);
 				ImGui::InputInt("presssec", &global->presssec, 1, 0);
 				ImGui::InputInt("aimoffx", &global->aimoffx, 1, 0);
 				ImGui::InputInt("aimoffy", &global->aimoffy, 1, 0);
@@ -120,7 +127,6 @@ namespace Menu
 				ImGui::InputInt("drawoffy", &global->drawoffy, 1, 0);
 				break;
 			case 2: /* visuals */
-				ImGui::Checkbox("Enable ", &global->visuals);
 				ImGui::Checkbox("Boxes ", &global->visuals_box);
 				ImGui::Checkbox("Head circle ", &global->visuals_headcircle);
 				ImGui::Checkbox("Player info ", &global->visuals_info);

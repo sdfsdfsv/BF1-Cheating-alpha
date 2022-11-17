@@ -176,8 +176,9 @@ inline float CalculateDistance(Vec3 local_position, Vec3 entity_position)
 {
 	float xx = entity_position.x - local_position.x;
 	float yy = entity_position.y - local_position.y;
-	float zz = entity_position.z - local_position.z;
-	return xx * xx + yy * yy + zz * zz;
+	//float zz = entity_position.z - local_position.z;
+	//return xx * xx + yy * yy + zz * zz;
+	return xx * xx + yy * yy;
 }
 
 inline void ConnectBones(ClientSoldierEntity* entity, UpdatePoseResultData::BONES bone1, UpdatePoseResultData::BONES bone2, ImVec4 col)
@@ -201,7 +202,7 @@ inline void ConnectBones(ClientSoldierEntity* entity, UpdatePoseResultData::BONE
 	if (!W2S(bone2_position, bscreen2))
 		return;
 	Draw d=Draw();
-	d.Line(ImVec2(bscreen1.x , bscreen1.y), ImVec2(bscreen2.x, bscreen2.y), col, 2, NONE);
+	d.Line(ImVec2(bscreen1.x+global->drawoffx , bscreen1.y+global->drawoffy), ImVec2(bscreen2.x+global->drawoffx, bscreen2.y+global->drawoffy), col, 2, NONE);
 }
 
 inline void DrawSkeleton(ClientSoldierEntity* entity, ImVec4 col)
