@@ -7,7 +7,7 @@
 
 #include <Windows.h>
 #include "Vendors/ImGui/imgui.h"
-
+#include "SDK/sdk.hpp"
 class Global
 {
 public:
@@ -43,6 +43,9 @@ public:
 	ImColor c_e_visuals_box = ImColor(1.0f, 1.0f, 1.0f);
 	ImColor c_e_visuals_box_visible = ImColor(1.0f, 1.0f, 1.0f);
 
+	DWORD64 encryptlocalplayermgr=0x0,encryptplayermgr=0x0;
+
+	bool testteammatesforaimbot=false;
 	float standoffset=1.27f, crouchoffset=1.05, lyoffset=0.15f;
 	int aimoffx = 0, aimoffy = 9;
 	float aimpredict = 0.0;
@@ -55,6 +58,9 @@ public:
 	static void grect(void);
 	void saveData(void);
 	void loadData(void);
+
+	ClientPlayer* local_player;
+	ClientPlayer* players[64];
 };
 
 extern Global* global;

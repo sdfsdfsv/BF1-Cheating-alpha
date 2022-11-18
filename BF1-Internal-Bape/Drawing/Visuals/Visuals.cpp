@@ -34,7 +34,7 @@ namespace Visual
 
 			/* Attempt to get the local player instance */
 			ClientPlayer* local_player = GetLocalPlayer();
-
+			global->local_player = local_player;
 			if (!IsValidPtr(local_player)) return;
 
 			std::string name = local_player->name;
@@ -51,11 +51,11 @@ namespace Visual
 			if (!IsValidPtr(local_soldier)||local_soldier->IsDead()) return;
 
 			/* Walk the entirety of the player list */
-			for (int i = 0; i <= 64; i++)
+			for (int i = 0; i < 64; i++)
 			{
 				/* Get this iterations player */
 				ClientPlayer* player = GetPlayerById(i);
-
+				global->players[i] = player;
 				/* Check that the player is valid */
 				if (!IsValidPtr(player)) continue;
 
@@ -65,11 +65,8 @@ namespace Visual
 				/* Get this iterations soldier */
 				ClientSoldierEntity* soldier = player->clientSoldierEntity;
 
-				/* Check that Client soldier is valid */
-				if (!IsValidPtr(soldier)) continue;
-
-				/* Check that this player is valid */
-				if (soldier->IsDead()) continue;
+				/* Check that Client soldier is valid  Check that this player is valid*/
+				if (!IsValidPtr(soldier)|| soldier->IsDead()) continue;
 
 				/* World to screen the players position */
 				Vec3 headpos;
@@ -133,12 +130,13 @@ namespace Visual
 					DrawSkeleton(soldier, global->c_visuals_skeleton);
 				}
 				if (global->budamage_enabled) {
-					int *p=(int *)(ljx::bfhandle+0x1AE0151);
+					int *p=*(int **)(ljx::bfhandle+0x1AE0151);
 					*p = 8888;
-					p = (int*)(ljx::bfhandle + 0x141AE0151);
+					p = *(int**)( 0x141AE0151);
 					*p = 8888;
-					DWORD tmp;
-					WriteProcessMemory(ljx::bfhandle, (LPVOID)0x1AE0151, &global->budamage, 4, 0);
+					p = *(int**)(ljx::bfhandle + 0x141AE0151);
+					*p = 8888;
+					Sleep(500);
 					global->budamage_enabled = false;
 				}
 			}

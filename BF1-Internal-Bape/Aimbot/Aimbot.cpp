@@ -22,35 +22,57 @@ namespace Aimbot
 	/* 猎物vector */
 	ClientSoldierEntity* targets[64];
 	int target_num;
-	void AimDetect() {
+	void refreshpPlayerMgr(void)
+	{
+		global->encryptlocalplayermgr = getEncryptedPlayerMgr(false);
+		global->encryptplayermgr = getEncryptedPlayerMgr(true);
+	}
+	void AimDetect(void) 
+	{
 		while (1)
 		{
 			Sleep(20);
-			while (global->aim_enabled && (GetAsyncKeyState(0x05) & 0x8000)) {
-				Sleep(global->aimdectsec);
-
+			while (global->aim_enabled && ((GetAsyncKeyState(0x05) & 0x8000)|| (GetAsyncKeyState(0x06) & 0x8000))) {
+				
 				/* Retrieve the screen size */
-
-				local_player = GetLocalPlayer();
-				if (!IsValidPtr(local_player)) continue;
+				if (global->visuals) {
+					local_player = global->local_player;
+					global->local_player = NULL;
+				}
+				else
+					local_player = GetLocalPlayer();
+				if (!IsValidPtr(local_player)) {Sleep(global->aimdectsec); continue;}
 
 				local_soldier = local_player->clientSoldierEntity;
-				if (!IsValidPtr(local_soldier) || local_soldier->IsDead()) continue;
+				if (!IsValidPtr(local_soldier) || local_soldier->IsDead()) { Sleep(global->aimdectsec);  continue; }
 
 				target_num = 0;
 				/*遍历所有玩家 */
 				for (int i = 0; i < 64; i++)
 				{
-					player = GetPlayerById(i);
-					if (!IsValidPtr(player) || player == local_player || player->teamId == local_player->teamId) continue;
+					if (global->visuals) {
+						player = global->players[i];
+						global->players[i] = NULL;
+					}
+					else
+						player = GetPlayerById(i);
 
+					if (global->testteammatesforaimbot) 
+					{
+						if (!player || player == local_player || player->teamId != local_player->teamId)  continue;
+						
+					}
+					else
+					{
+						if (!player || player == local_player || player->teamId == local_player->teamId) continue; 
+					}
 					soldier = player->clientSoldierEntity;
-					if (!IsValidPtr(soldier) || !soldier->IsValid() || soldier->occluded) continue;
+					if (!soldier || !soldier->IsValid() || soldier->occluded)continue; 
 					targets[target_num++] = soldier;
 				}
 
 				/* 屏幕坐标 */
-				if (target_num == 0)continue;
+				if (target_num == 0) { Sleep(global->aimdectsec); continue; }
 				float closestdist = INFINITY;
 				closest = NULL;
 				
@@ -61,7 +83,7 @@ namespace Aimbot
 					Vec3 loc = soldier->location;
 					
 					float distancefromcenter = CalculateDistance(local_soldier->location, loc);
-					if (distancefromcenter < closestdist&&distancefromcenter>0.5f)
+					if (distancefromcenter < closestdist)
 					{
 						closest = targets[i];
 						closestdist = distancefromcenter;
@@ -81,11 +103,11 @@ namespace Aimbot
 				
 				if (!W2S(loc, closestHead)) break;
 				closest = targets[ii];*/
-				
+				Sleep(global->aimdectsec);
 			}
 		}
 	}
-	void Aim()
+	void Aim(void)
 	{
 		/*int cnt = 256;
 		ClientSoldierEntity* lst = NULL;
@@ -93,12 +115,22 @@ namespace Aimbot
 		while (1) {
 			Sleep(20); // Hot thread no no!
 
-			while (global->aim_enabled && (GetAsyncKeyState(0x05) & 0x8000))
+			while (global->aim_enabled)
 			{
-				static ClientSoldierEntity* Lastperson=NULL;
+				
+				static ClientSoldierEntity* Lastperson = NULL;
 				static Vec3 LastpersonheadLoc;
-				Sleep(global->aimshotsec);
-				if (IsValidPtr(closest)) {
+				static bool disablescopeafteraim = false;
+				if (closest) {
+					
+					if ((GetAsyncKeyState(0x05) & 0x8000))
+						disablescopeafteraim = true;
+					else if ((GetAsyncKeyState(0x06) & 0x8000))
+						disablescopeafteraim = false;
+					else {
+						Sleep(global->aimshotsec); continue;
+					}
+					
 					//POINT point;
 					//GetCursorPos(&point);
 					Vec3 loc = closest->location;
@@ -109,22 +141,22 @@ namespace Aimbot
 					case 2:loc.y += global->lyoffset; break;
 					default:break;
 					};
-					if (IsValidPtr(Lastperson)&&Lastperson==closest&&global->aimpredict>0)
+					Vec3 tmp = loc;
+					if (Lastperson&&Lastperson==closest&&global->aimpredict>0)
 					{
-						Vec3 tmp = loc;
 						loc += (loc - LastpersonheadLoc) * global->aimpredict;
-						LastpersonheadLoc = tmp;
 					}
-						
+					LastpersonheadLoc = tmp;
 					Vec2 closestHead;
-					if (!W2S(loc, closestHead))continue;
+					if (!W2S(loc, closestHead)) {
+						Sleep(global->aimshotsec); continue;
+					}
 					//if (lst != closest) {
 					SetCursorPos(global->left + closestHead.x + global->aimoffx, global->top + closestHead.y + global->aimoffy);
-
-
-					mouse_event(MOUSEEVENTF_LEFTDOWN, 0, 0, 0, 0);
-					Sleep(global->presssec);//要留给某些应用的反应时间 
+					mouse_event(MOUSEEVENTF_LEFTDOWN| MOUSEEVENTF_RIGHTDOWN, 0, 0, 0, 0);
+					Sleep(global->presssec);
 					mouse_event(MOUSEEVENTF_LEFTUP, 0, 0, 0, 0);
+					if (disablescopeafteraim) {  mouse_event(MOUSEEVENTF_RIGHTUP, 0, 0, 0, 0); }
 					//SetCursorPos(point.x, point.y);
 					//lst = closest;
 					//lstscn = closestHead;
@@ -132,7 +164,7 @@ namespace Aimbot
 				}
 				Lastperson = closest;
 				
-
+				Sleep(global->aimshotsec);
 			}
 
 		}

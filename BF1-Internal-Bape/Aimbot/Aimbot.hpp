@@ -12,6 +12,7 @@ namespace Aimbot
 {
 	void Aim();
 	void AimDetect();
+	void refreshpPlayerMgr();
 }
 
 #endif // _AIMBOT_HPP

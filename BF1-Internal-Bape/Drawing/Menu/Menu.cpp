@@ -10,6 +10,7 @@
 #include "../../Global.hpp"
 #include "../../Config/Config.hpp"
 #include "../../Drawing/Functions/ljx.h"
+#include "../../Aimbot/Aimbot.hpp"
 #include <thread>
 
 namespace Menu
@@ -97,18 +98,19 @@ namespace Menu
 			ImGui::SameLine(0.0, 3.0f);
 			if (ImGui::Button("Colors", ImVec2(50, 25))) 
 				m_CurrentTab = 3;
-			if (ImGui::Button("Save", ImVec2(50, 25)))
-				global->saveData();
-			
+			//if (ImGui::Button("RefreshPlayerMgr", ImVec2(50, 25)))
+			//	Aimbot::refreshpPlayerMgr();
 			ImGui::Separator();
 			//Config config;
 			RECT rect;
 			DXHook tmp;
 			switch (m_CurrentTab) {
 			case 1: /* aimbot */
+				
 				ImGui::Checkbox("aimbot2.0", &global->aim_enabled);
 				ImGui::Checkbox("Crosshair", &global->misc_crosshair);
 				ImGui::Checkbox("Esp ", &global->visuals);
+				ImGui::Checkbox("testteammatesforaimbot", &global->testteammatesforaimbot);
 				if (ImGui::Button("Save", ImVec2(50, 25)))
 					global->saveData();
 				if (ImGui::Button("Load", ImVec2(50, 25)))

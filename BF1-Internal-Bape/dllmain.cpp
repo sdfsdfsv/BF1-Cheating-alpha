@@ -14,7 +14,7 @@
 #include "Drawing/Visuals/Visuals.hpp"
 #include "Global.hpp"
 #include "Utility/Discord RPC/Discord.hpp"
-#include "Aimbot/Aimbot.hpp"
+#include "./Aimbot/Aimbot.hpp"
 #include "Drawing/Functions/ljx.h"
 bool pressed = false;
 
@@ -66,7 +66,6 @@ inline void Main(HMODULE hModule){
 		t_aimdect.detach();
 	}
 	global->loadData();
-	
 	while (true){
 		/* Exit thread if insert is press */
 		if (GetAsyncKeyState(VK_END)) break;

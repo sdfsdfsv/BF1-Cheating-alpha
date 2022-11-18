@@ -23,17 +23,22 @@ inline hashtable_iterator<_QWORD>* __fastcall hashtable_find(hashtable<_QWORD>* 
 
 	hash_node<_QWORD>* node = table->mpBucketArray[startCount];
 
-	if (IsValidPtr(node) && node->mValue.first){
-		while (key != node->mValue.first){
+	if (IsValidPtr(node) && node->mValue.first)
+	{
+		while (key != node->mValue.first)
+		{
 			node = node->mpNext;
-			if (!node || !IsValidPtr(node))
-				goto LABEL_4;
+			if (!IsValidPtr(node)) {
+				iterator->mpNode = table->mpBucketArray[mnBucketCount];
+				iterator->mpBucket = &table->mpBucketArray[mnBucketCount];
+				return iterator;
+			}
 		}
 		iterator->mpNode = node;
 		iterator->mpBucket = &table->mpBucketArray[startCount];
 	}
-	else{
-	LABEL_4:
+	else
+	{
 		iterator->mpNode = table->mpBucketArray[mnBucketCount];
 		iterator->mpBucket = &table->mpBucketArray[mnBucketCount];
 	}
@@ -64,7 +69,7 @@ inline void* DecryptPointer(_QWORD EncryptedPtr, _QWORD PointerKey)
 	BYTE* pEncryptedPtrBytes = (BYTE*)&EncryptedPtr;
 	BYTE* pKeyBytes = (BYTE*)&EncryptionKey;
 
-	for (char i = 0; i < 7; i++){
+	for (char i = 0; i < 7; i++) {
 		pDecryptedPtrBytes[i] = (pKeyBytes[i] * 0x7A) ^ (pEncryptedPtrBytes[i] + pKeyBytes[i]);
 		EncryptionKey += 8;
 	}
@@ -83,62 +88,62 @@ inline ClientPlayer* EncryptedPlayerMgr__GetPlayer(QWORD EncryptedPlayerMgr, int
 
 	return (ClientPlayer*)Player;
 }
-
-/* Implementation for get player by ID */
-inline ClientPlayer* GetPlayerById(int id)
+inline _QWORD getEncryptedPlayerMgr(bool getlocalplayerornot)
 {
 	ClientGameContext* pClientGameContext = ClientGameContext::GetInstance();
-	if (!IsValidPtr(pClientGameContext)) return nullptr;
+	if (!IsValidPtr(pClientGameContext)) return NULL;
+
 	ClientPlayerManager* pPlayerManager = pClientGameContext->m_clientPlayerManager;
-	if (!IsValidPtr(pPlayerManager)) return nullptr;
+	if (!IsValidPtr(pPlayerManager)) return NULL;
 
 	_QWORD pObfuscationMgr = *(_QWORD*)OFFSET_OBFUSCATEMGR;
 
-	_QWORD PlayerListXorValue = *(_QWORD*)((_QWORD)pPlayerManager + 0xF8);
-	_QWORD PlayerListKey = PlayerListXorValue ^ *(_QWORD*)(pObfuscationMgr + 0x70);
+	_QWORD PlayerListXorValue = NULL;
+	if (getlocalplayerornot)
+		PlayerListXorValue = *(_QWORD*)((_QWORD)pPlayerManager + 0xF0);
+	else
+		PlayerListXorValue = *(_QWORD*)((_QWORD)pPlayerManager + 0xF8);//
+
+
+	_QWORD PlayerListKey = PlayerListXorValue ^ *(_QWORD*)(pObfuscationMgr + 0x70);//亦或
 
 	hashtable<_QWORD>* table = (hashtable<_QWORD>*)(pObfuscationMgr + 8);
 	hashtable_iterator<_QWORD> iterator = { 0 };
-
+	if (!IsValidPtr(table)) return NULL;
 	hashtable_find(table, &iterator, PlayerListKey);
-	if (iterator.mpNode == table->mpBucketArray[table->mnBucketCount])
-		return nullptr;
+	if (!iterator.mpNode || iterator.mpNode == table->mpBucketArray[table->mnBucketCount])
+		return NULL;
 
 	_QWORD EncryptedPlayerMgr = (_QWORD)iterator.mpNode->mValue.second;
-	if (!IsValidPtr(EncryptedPlayerMgr)) return nullptr;
-
 	_DWORD MaxPlayerCount = *(_DWORD*)(EncryptedPlayerMgr + 0x18);
-	if (MaxPlayerCount != 70 || MaxPlayerCount <= id) return nullptr;
-
-	return EncryptedPlayerMgr__GetPlayer(EncryptedPlayerMgr, id);
+	if (!IsValidPtr(EncryptedPlayerMgr)) return NULL;
+	if (getlocalplayerornot && MaxPlayerCount != 1) return NULL;
+	else if (!getlocalplayerornot && MaxPlayerCount != 70) return NULL;
+	return EncryptedPlayerMgr;
 }
+/* Implementation for get player by ID */
+inline ClientPlayer* GetPlayerById(int id)
+{
+	auto a = getEncryptedPlayerMgr(false);
+	if (a)
+		return EncryptedPlayerMgr__GetPlayer(a, id);
+	else
+		return NULL;
+}
+
+
+
+
 
 /* Implementationf for Get LocalPlayer*/
 inline ClientPlayer* GetLocalPlayer(void)
 {
-	ClientGameContext* pClientGameContext = ClientGameContext::GetInstance();
-	if (!IsValidPtr(pClientGameContext)) return nullptr;
-	ClientPlayerManager* pPlayerManager = pClientGameContext->m_clientPlayerManager;
-	if (!IsValidPtr(pPlayerManager)) return nullptr;
 
-	_QWORD pObfuscationMgr = *(_QWORD*)OFFSET_OBFUSCATEMGR;
-
-	_QWORD LocalPlayerListXorValue = *(_QWORD*)((_QWORD)pPlayerManager + 0xF0);
-	_QWORD LocalPlayerListKey = LocalPlayerListXorValue ^ *(_QWORD*)(pObfuscationMgr + 0x70);
-
-	hashtable<_QWORD>* table = (hashtable<_QWORD>*)(pObfuscationMgr + 8);
-	hashtable_iterator<_QWORD> iterator = { 0 };
-
-	hashtable_find(table, &iterator, LocalPlayerListKey);
-	if (iterator.mpNode == table->mpBucketArray[table->mnBucketCount])return nullptr;
-
-	_QWORD EncryptedPlayerMgr = (_QWORD)iterator.mpNode->mValue.second;
-	if (!IsValidPtr(EncryptedPlayerMgr)) return nullptr;
-
-	_DWORD MaxPlayerCount = *(_DWORD*)(EncryptedPlayerMgr + 0x18);
-	if (MaxPlayerCount != 1) return nullptr;
-
-	return EncryptedPlayerMgr__GetPlayer(EncryptedPlayerMgr, 0);
+	auto a = getEncryptedPlayerMgr(true);
+	if (a)
+		return EncryptedPlayerMgr__GetPlayer(a, 0);
+	else
+		return NULL;
 }
 
 /*世界坐标转屏幕 */
@@ -166,7 +171,7 @@ inline bool W2S(Vec3 position, Vec2& out)
 	/* Calculate the y component of the vector */
 	float y = view_projection.m[0][1] * position.x + view_projection.m[1][1] * position.y + view_projection.m[2][1] * position.z + view_projection.m[3][1];
 
-	out = Vec2(display_size.x + x * display_size.x / w , display_size.y - y * display_size.y / w );
+	out = Vec2(display_size.x + x * display_size.x / w, display_size.y - y * display_size.y / w);
 
 	/* Return success */
 	return true;
@@ -178,7 +183,7 @@ inline float CalculateDistance(Vec3 local_position, Vec3 entity_position)
 	float yy = entity_position.y - local_position.y;
 	//float zz = entity_position.z - local_position.z;
 	//return xx * xx + yy * yy + zz * zz;
-	return xx * xx + yy * yy;
+	return xx * xx + yy * yy;//faster
 }
 
 inline void ConnectBones(ClientSoldierEntity* entity, UpdatePoseResultData::BONES bone1, UpdatePoseResultData::BONES bone2, ImVec4 col)
@@ -201,8 +206,8 @@ inline void ConnectBones(ClientSoldierEntity* entity, UpdatePoseResultData::BONE
 	Vec2 bscreen2;
 	if (!W2S(bone2_position, bscreen2))
 		return;
-	Draw d=Draw();
-	d.Line(ImVec2(bscreen1.x+global->drawoffx , bscreen1.y+global->drawoffy), ImVec2(bscreen2.x+global->drawoffx, bscreen2.y+global->drawoffy), col, 2, NONE);
+	Draw d = Draw();
+	d.Line(ImVec2(bscreen1.x + global->drawoffx, bscreen1.y + global->drawoffy), ImVec2(bscreen2.x + global->drawoffx, bscreen2.y + global->drawoffy), col, 2, NONE);
 }
 
 inline void DrawSkeleton(ClientSoldierEntity* entity, ImVec4 col)
